@@ -1,16 +1,21 @@
 package com.example.hospitalmanagmentsystem.dao;
 import com.example.hospitalmanagmentsystem.model.Patient;
-import com.example.hospitalmanagmentsystem.util.DatabaseConnection;
+import com.example.hospitalmanagmentsystem.repository.DatabaseConnection;
+import com.example.hospitalmanagmentsystem.util.CustomLogger;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * Data Access Object for Patient entity
  * Implements CRUD operations for patients
  */
 public class PatientDAO {
+
+    private static final Logger logger = CustomLogger.createLogger(PatientDAO.class.getName());
 
     /**
      * Creates a new patient in the database
@@ -64,7 +69,7 @@ public class PatientDAO {
             }
             
         } catch (SQLException e) {
-            System.err.println("Error retrieving patient: " + e.getMessage());
+            logger.severe("Error retrieving patient: " + e.getMessage());
         }
         
         return null;
@@ -90,7 +95,7 @@ public class PatientDAO {
             }
             
         } catch (SQLException e) {
-            System.err.println("Error retrieving patient: " + e.getMessage());
+            logger.severe("Error retrieving patient: " + e.getMessage());
         }
         
         return null;
@@ -100,22 +105,46 @@ public class PatientDAO {
      * Retrieves all patients from the database
      * @return List of Patient objects
      */
-    public List<Patient> getAllPatients() {
+//    public List<Patient> getAllPatients() {
+//        List<Patient> patients = new ArrayList<>();
+//        String sql = "SELECT * FROM patients ORDER BY surname, first_name";
+//
+//        try (Connection conn = DatabaseConnection.getConnection();
+//             Statement stmt = conn.createStatement();
+//             ResultSet rs = stmt.executeQuery(sql)) {
+//
+//            while (rs.next()) {
+//                patients.add(extractPatientFromResultSet(rs));
+//            }
+//
+//        } catch (SQLException e) {
+//            logger.severe("Error retrieving patients: " + e.getMessage());
+//        }
+//
+//        return patients;
+//    }
+
+    public List<Patient> getPaginatedPatients(int pageNumber, int pageSize) {
         List<Patient> patients = new ArrayList<>();
-        String sql = "SELECT * FROM patients ORDER BY surname, first_name";
-        
+        String sql = "SELECT * FROM patients ORDER BY surname, first_name LIMIT ? OFFSET ?";
+
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            
-            while (rs.next()) {
-                patients.add(extractPatientFromResultSet(rs));
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            int offset = (pageNumber - 1) * pageSize;
+            pstmt.setInt(1, pageSize);
+            pstmt.setInt(2, offset);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    patients.add(extractPatientFromResultSet(rs));
+                }
             }
-            
+
         } catch (SQLException e) {
-            System.err.println("Error retrieving patients: " + e.getMessage());
+            logger.severe("Error retrieving paginated patients: " + e.getMessage());
         }
-        
+
         return patients;
     }
 
@@ -141,7 +170,7 @@ public class PatientDAO {
             return rowsAffected > 0;
             
         } catch (SQLException e) {
-            System.err.println("Error updating patient: " + e.getMessage());
+            logger.severe("Error updating patient: " + e.getMessage());
             return false;
         }
     }
@@ -163,7 +192,7 @@ public class PatientDAO {
             return rowsAffected > 0;
             
         } catch (SQLException e) {
-            System.err.println("Error deleting patient: " + e.getMessage());
+            logger.severe("Error deleting patient: " + e.getMessage());
             return false;
         }
     }

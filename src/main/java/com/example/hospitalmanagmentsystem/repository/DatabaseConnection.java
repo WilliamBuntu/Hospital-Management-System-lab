@@ -1,14 +1,19 @@
-package com.example.hospitalmanagmentsystem.util;
+package com.example.hospitalmanagmentsystem.repository;
+
+import com.example.hospitalmanagmentsystem.util.CustomLogger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * Database connection manager for the Hospital Information System
  */
 public class DatabaseConnection {
+
+    private static final Logger logger = CustomLogger.createLogger(DatabaseConnection.class.getName());
     // JDBC Database URL for Postgres
     private static final String JDBC_URL;
 
@@ -25,9 +30,11 @@ public class DatabaseConnection {
             USERNAME = properties.getProperty("db.username");
             PASSWORD = properties.getProperty("db.password");
         } catch (Exception e) {
+            logger.severe("Failed to load database properties: " + e.getMessage());
             throw new RuntimeException("Failed to load database properties", e);
         }
     }
+
 
     private static Connection connection = null;
 
@@ -38,19 +45,21 @@ public class DatabaseConnection {
      */
     public static Connection getConnection() throws SQLException {
         try {
-            // Load PostgreSQL JDBC Driver
+            // Load Postgres JDBC Driver
             Class.forName("org.postgresql.Driver");
 
             // Open a connection if it's not already open or is closed
             if (connection == null || connection.isClosed()) {
                 connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-                System.out.println("Database connection established successfully!");
+                logger.info("Database connection established successfully!");
             }
 
             return connection;
         } catch (ClassNotFoundException e) {
+            logger.severe("Postgres JDBC Driver not found: " + e.getMessage());
             throw new SQLException("JDBC Driver not found", e);
         } catch (SQLException e) {
+            logger.severe("Failed to connect to database: " + e.getMessage());
             throw new SQLException("Failed to connect to database", e);
         }
     }
@@ -62,10 +71,11 @@ public class DatabaseConnection {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
-                System.out.println("Database connection closed successfully!");
+                connection = null; // Set to null to allow for garbage collection
+                logger.info("Database connection closed successfully!");
             }
         } catch (SQLException e) {
-            System.err.println("Error closing database connection: " + e.getMessage());
+            logger.severe("Error closing database connection: " + e.getMessage());
         }
     }
 
@@ -78,10 +88,12 @@ public class DatabaseConnection {
             getConnection();
             return true;
         } catch (SQLException e) {
-            System.err.println("Database connection test failed: " + e.getMessage());
+            logger.severe("Database connection test failed: " + e.getMessage());
             return false;
         } finally {
             closeConnection();
         }
     }
+
+
 }

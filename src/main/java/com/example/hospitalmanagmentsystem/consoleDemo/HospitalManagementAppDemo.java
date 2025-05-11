@@ -1,5 +1,5 @@
 package com.example.hospitalmanagmentsystem.consoleDemo;
-import com.example.hospitalmanagmentsystem.util.DatabaseConnection;
+import com.example.hospitalmanagmentsystem.repository.DatabaseConnection;
 import com.example.hospitalmanagmentsystem.model.Patient;
 import com.example.hospitalmanagmentsystem.dao.PatientDAO;
 
@@ -78,37 +78,64 @@ public class HospitalManagementAppDemo {
         }
     }
     
-    private static void addNewPatient() {
-        System.out.println("\n==== Add New Patient ====");
-        
-        System.out.print("Enter patient number: ");
-        String patientNumber = scanner.nextLine();
-        
-        System.out.print("Enter surname: ");
-        String surname = scanner.nextLine();
-        
-        System.out.print("Enter first name: ");
-        String firstName = scanner.nextLine();
-        
-        System.out.print("Enter address: ");
-        String address = scanner.nextLine();
-        
-        System.out.print("Enter telephone: ");
-        String telephone = scanner.nextLine();
-        
-        Patient newPatient = new Patient(patientNumber, surname, firstName, address, telephone);
-        
-        if (patientDAO.createPatient(newPatient)) {
-            System.out.println("Patient added successfully!");
-        } else {
-            System.out.println("Failed to add patient.");
-        }
-    }
+  private static void addNewPatient() {
+      System.out.println("\n==== Add New Patient ====");
+
+      System.out.print("Enter patient number: ");
+      String patientNumber = scanner.nextLine();
+      if (!patientNumber.matches("\\d+")) { // Ensures patientNumber is numeric
+          System.out.println("Patient number must be a valid number.");
+          return;
+      }
+
+      if (patientDAO.getPatientByNumber(patientNumber) != null) { // Check if patientNumber already exists
+          System.out.println("Patient number already exists in the database. choose a different one.");
+          return;
+      }
+
+      System.out.print("Enter surname: ");
+      String surname = scanner.nextLine();
+      if (surname.isEmpty()) {
+          System.out.println("Surname cannot be empty.");
+          return;
+      }
+
+      System.out.print("Enter first name: ");
+      String firstName = scanner.nextLine();
+      if (firstName.isEmpty()) {
+          System.out.println("First name cannot be empty.");
+          return;
+      }
+
+      System.out.print("Enter address: ");
+      String address = scanner.nextLine();
+      if (address.isEmpty()) {
+          System.out.println("Address cannot be empty.");
+          return;
+      }
+
+      System.out.print("Enter telephone: ");
+      String telephone = scanner.nextLine();
+      if (!telephone.matches("\\+\\d{1,2}\\d{9,12}")) { // Validates a 10-digit phone number
+          System.out.println("Telephone must be a valid ex. +250780303001.");
+          return;
+      }
+
+      Patient newPatient = new Patient(patientNumber, surname, firstName, address, telephone);
+
+      if (patientDAO.createPatient(newPatient)) {
+          System.out.println("Patient added successfully!");
+      } else {
+          System.out.println("Failed to add patient.");
+      }
+  }
     
     private static void viewAllPatients() {
         System.out.println("\n==== All Patients ====");
+
+        // Fetch paginated patients (for demonstration, using page 1 and page size 10)
         
-        List<Patient> patients = patientDAO.getAllPatients();
+        List<Patient> patients = patientDAO.getPaginatedPatients(1, 10);
         
         if (patients.isEmpty()) {
             System.out.println("No patients found.");
@@ -169,7 +196,7 @@ public class HospitalManagementAppDemo {
             
             System.out.print("Patient Number [" + patient.getPatientNumber() + "]: ");
             String patientNumber = scanner.nextLine();
-            if (!patientNumber.isEmpty()) {
+            if (!patientNumber.isEmpty() && patientNumber.matches("\\d+")) {
                 patient.setPatientNumber(patientNumber);
             }
             

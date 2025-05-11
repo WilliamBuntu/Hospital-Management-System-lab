@@ -20,7 +20,7 @@
         <VBox alignment="CENTER" BorderPane.alignment="CENTER"
               styleClass="top-container">
             <children>
-                <Label text="Hospital Information System" styleClass="main-title">
+                <Label text="Hospital Management System" styleClass="main-title">
                     <font>
                         <Font name="System Bold" size="24.0" />
                     </font>
@@ -39,6 +39,7 @@
             </children>
         </VBox>
     </top>
+
     <center>
         <TableView fx:id="patientTableView" BorderPane.alignment="CENTER"
                    styleClass="patient-table-view">
@@ -57,6 +58,11 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
+        <!-- Pagination Buttons -->
+<!--        <HBox>-->
+<!--            <Button fx:id="btnPreviousPage" text="Previous" onAction="#handlePreviousPage" />-->
+<!--            <Button fx:id="btnNextPage" text="Next" onAction="#handleNextPage" />-->
+<!--        </HBox>-->
     </center>
     <right>
         <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="300.0" spacing="15.0" BorderPane.alignment="CENTER"
@@ -155,6 +161,7 @@
                             <children>
                                 <Button fx:id="btnClear" mnemonicParsing="false" onAction="#handleClearButton" prefWidth="235.0" text="Clear Form"
                                         styleClass="button" />
+                                <Button fx:id="btnGetPatientByNumber" text="Get Patient" onAction="#handleGetPatientByNumber" styleClass="button" />
                             </children>
                         </HBox>
                     </children>
