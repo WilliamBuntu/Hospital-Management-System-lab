@@ -26,25 +26,25 @@ public class PatientDAO {
         String sql = "INSERT INTO patients (id, patient_number, surname, first_name, address, telephone) VALUES (?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             // If no ID is provided, generate a random UUID
             if (patient.getId() == null || patient.getId().isEmpty()) {
                 patient.setId(UUID.randomUUID().toString().substring(0, 10));
             }
             
-            pstmt.setString(1, patient.getId());
-            pstmt.setString(2, patient.getPatientNumber());
-            pstmt.setString(3, patient.getSurname());
-            pstmt.setString(4, patient.getFirstName());
-            pstmt.setString(5, patient.getAddress());
-            pstmt.setString(6, patient.getTelephone());
+            stmt.setString(1, patient.getId());
+            stmt.setString(2, patient.getPatientNumber());
+            stmt.setString(3, patient.getSurname());
+            stmt.setString(4, patient.getFirstName());
+            stmt.setString(5, patient.getAddress());
+            stmt.setString(6, patient.getTelephone());
             
-            int rowsAffected = pstmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
             
         } catch (SQLException e) {
-            System.err.println("Error creating patient: " + e.getMessage());
+            logger.severe("Error creating patient: " + e.getMessage());
             return false;
         }
     }
@@ -58,11 +58,11 @@ public class PatientDAO {
         String sql = "SELECT * FROM patients WHERE id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            pstmt.setString(1, id);
+            stmt.setString(1, id);
             
-            try (ResultSet rs = pstmt.executeQuery()) {
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return extractPatientFromResultSet(rs);
                 }
@@ -84,11 +84,11 @@ public class PatientDAO {
         String sql = "SELECT * FROM patients WHERE patient_number = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            pstmt.setString(1, patientNumber);
+            stmt.setString(1, patientNumber);
             
-            try (ResultSet rs = pstmt.executeQuery()) {
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return extractPatientFromResultSet(rs);
                 }
@@ -105,37 +105,18 @@ public class PatientDAO {
      * Retrieves all patients from the database
      * @return List of Patient objects
      */
-//    public List<Patient> getAllPatients() {
-//        List<Patient> patients = new ArrayList<>();
-//        String sql = "SELECT * FROM patients ORDER BY surname, first_name";
-//
-//        try (Connection conn = DatabaseConnection.getConnection();
-//             Statement stmt = conn.createStatement();
-//             ResultSet rs = stmt.executeQuery(sql)) {
-//
-//            while (rs.next()) {
-//                patients.add(extractPatientFromResultSet(rs));
-//            }
-//
-//        } catch (SQLException e) {
-//            logger.severe("Error retrieving patients: " + e.getMessage());
-//        }
-//
-//        return patients;
-//    }
-
     public List<Patient> getPaginatedPatients(int pageNumber, int pageSize) {
         List<Patient> patients = new ArrayList<>();
         String sql = "SELECT * FROM patients ORDER BY surname, first_name LIMIT ? OFFSET ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             int offset = (pageNumber - 1) * pageSize;
-            pstmt.setInt(1, pageSize);
-            pstmt.setInt(2, offset);
+            stmt.setInt(1, pageSize);
+            stmt.setInt(2, offset);
 
-            try (ResultSet rs = pstmt.executeQuery()) {
+            try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     patients.add(extractPatientFromResultSet(rs));
                 }
@@ -157,16 +138,16 @@ public class PatientDAO {
         String sql = "UPDATE patients SET patient_number = ?, surname = ?, first_name = ?, address = ?, telephone = ? WHERE id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            pstmt.setString(1, patient.getPatientNumber());
-            pstmt.setString(2, patient.getSurname());
-            pstmt.setString(3, patient.getFirstName());
-            pstmt.setString(4, patient.getAddress());
-            pstmt.setString(5, patient.getTelephone());
-            pstmt.setString(6, patient.getId());
+            stmt.setString(1, patient.getPatientNumber());
+            stmt.setString(2, patient.getSurname());
+            stmt.setString(3, patient.getFirstName());
+            stmt.setString(4, patient.getAddress());
+            stmt.setString(5, patient.getTelephone());
+            stmt.setString(6, patient.getId());
             
-            int rowsAffected = pstmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
             
         } catch (SQLException e) {
@@ -184,11 +165,11 @@ public class PatientDAO {
         String sql = "DELETE FROM patients WHERE id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            pstmt.setString(1, id);
+            stmt.setString(1, id);
             
-            int rowsAffected = pstmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
             
         } catch (SQLException e) {

@@ -5,8 +5,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 /**
- * Main Application class for Hospital Information System
+ * Main Application class for Hospital Management System
  * JavaFX application entry point
  */
 public class HospitalApplication extends Application {
@@ -14,13 +16,13 @@ public class HospitalApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         // Load the FXML file
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/hospitalmanagmentsystem/patient.fxml"));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/hospitalmanagmentsystem/patient.fxml")));
 
         // Set the scene
         Scene scene = new Scene(root, 800, 600);
 
         // Add the CSS stylesheet
-        scene.getStylesheets().add(getClass().getResource("/com/example/hospitalmanagmentsystem/application.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/hospitalmanagmentsystem/application.css")).toExternalForm());
 
         // Configure the stage
         primaryStage.setTitle("Hospital Management System");

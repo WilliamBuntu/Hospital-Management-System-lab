@@ -13,7 +13,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -77,7 +76,7 @@ public class PatientManagementController implements Initializable {
         colTelephone.setCellValueFactory(new PropertyValueFactory<>("telephone"));
 
         // Load patients
-        loadPatients(pageNumber,pageSize); // Load first page with 10 patients
+        loadPatients(pageNumber); // Load the first page with 10 patients
 
         // Add selection listener to table
         patientTableView.getSelectionModel().selectedItemProperty().addListener(
@@ -86,40 +85,27 @@ public class PatientManagementController implements Initializable {
         // Initialize buttons state
         updateButtonStates(false);
     }
-     // Handler for "Next Page" button
+     // Handler for the "Next Page" button
     @FXML
     private void handleNextPage() {
         pageNumber++;
-        loadPatients(pageNumber, pageSize);
+        loadPatients(pageNumber);
     }
     // Handler for "Previous Page" button
     @FXML
     private void handlePreviousPage() {
         if (pageNumber > 1) {
             pageNumber--;
-            loadPatients(pageNumber, pageSize);
+            loadPatients(pageNumber);
         }
     }
 
     /**
-     * Loads patients from database and populates the TableView
+     * Loads patients from a database and populates the TableView
      */
-//    private void loadPatients() {
-//        try {
-//            List<Patient> patients = patientDAO.getAllPatients();
-//            patientList = FXCollections.observableArrayList(patients);
-//            patientTableView.setItems(patientList);
-//            logger.info("Loaded " + patients.size() + " patients");
-//            showStatus("Loaded " + patients.size() + " patients", false);
-//        } catch (Exception e) {
-//            logger.severe("Error loading patients: " + e.getMessage());
-//            showAlert(Alert.AlertType.ERROR, "Database Error", "Error loading patients", e.getMessage());
-//        }
-//    }
-
-    private void loadPatients(int pageNumber, int pageSize) {
+    private void loadPatients(int pageNumber) {
         try {
-            List<Patient> patients = patientDAO.getPaginatedPatients(pageNumber, pageSize);
+            List<Patient> patients = patientDAO.getPaginatedPatients(pageNumber, 10);
             patientList = FXCollections.observableArrayList(patients);
             patientTableView.setItems(patientList);
             logger.info("Loaded " + patients.size() + " patients for page " + pageNumber);
@@ -184,10 +170,10 @@ public class PatientManagementController implements Initializable {
         clearForm();
         updateButtonStates(false);
 
-        // Generate temporary ID (will be replaced by database)
+        // Generate temporary ID (will be replaced by a database)
         txtId.setText(UUID.randomUUID().toString().substring(0, 10));
 
-        // Focus on patient number field
+        // Focus on the patient number field
         txtPatientNumber.requestFocus();
     }
 
@@ -246,12 +232,12 @@ public class PatientManagementController implements Initializable {
             );
 
             try {
-                // Save to database
+                // Save to a database
                 boolean success = patientDAO.createPatient(patient);
 
                 if (success) {
                     // Refresh table
-                    loadPatients(pageNumber, pageSize);
+                    loadPatients(pageNumber);
 
                     // Select the new patient
                     selectPatientById(patient.getId());
@@ -274,7 +260,7 @@ public class PatientManagementController implements Initializable {
     @FXML
     private void handleUpdateButton() {
         if (validateForm()) {
-            // Get selected patient
+            // Get a selected patient
             Patient selectedPatient = patientTableView.getSelectionModel().getSelectedItem();
 
             if (selectedPatient == null) {
@@ -283,7 +269,7 @@ public class PatientManagementController implements Initializable {
                 return;
             }
 
-            // Create updated patient from form data
+            // Create an updated patient from form data
             Patient updatedPatient = new Patient(
                     txtId.getText(),
                     txtPatientNumber.getText(),
@@ -299,7 +285,7 @@ public class PatientManagementController implements Initializable {
 
                 if (success) {
                     // Refresh table
-                    loadPatients( pageNumber, pageSize);
+                    loadPatients( pageNumber);
 
                     // Select the updated patient
                     selectPatientById(updatedPatient.getId());
@@ -321,7 +307,7 @@ public class PatientManagementController implements Initializable {
      */
     @FXML
     private void handleDeleteButton() {
-        // Get selected patient
+        // Get a selected patient
         Patient selectedPatient = patientTableView.getSelectionModel().getSelectedItem();
 
         if (selectedPatient == null) {
@@ -346,7 +332,7 @@ public class PatientManagementController implements Initializable {
 
                 if (success) {
                     // Refresh table
-                    loadPatients( pageNumber, pageSize);
+                    loadPatients( pageNumber);
 
                     // Clear form
                     clearForm();
