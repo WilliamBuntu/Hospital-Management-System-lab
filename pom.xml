@@ -47,6 +47,11 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.4</version> <!-- Use the latest version -->
+        </dependency>
     </dependencies>
 
     <build>
@@ -70,7 +75,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.example.hospitalmanagmentsystem/com.example.hospitalmanagmentsystem.HelloApplication
+                                com.example.hospitalmanagmentsystem/com.example.hospitalmanagmentsystem.HospitalApplication
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

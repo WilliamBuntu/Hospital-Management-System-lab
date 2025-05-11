@@ -1,9 +1,8 @@
-package com.example.hospitalmanagmentsystem;
+package com.example.hospitalmanagmentsystem.controller;
 
 import com.example.hospitalmanagmentsystem.dao.PatientDAO;
 import com.example.hospitalmanagmentsystem.model.Patient;
 
-import com.example.hospitalmanagmentsystem.util.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

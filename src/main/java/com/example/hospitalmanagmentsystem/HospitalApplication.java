@@ -1,23 +1,39 @@
 package com.example.hospitalmanagmentsystem;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+/**
+ * Main Application class for Hospital Information System
+ * JavaFX application entry point
+ */
+public class HospitalApplication extends Application {
 
-public class HelloApplication extends Application {
     @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("patient_management.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
-        stage.setScene(scene);
-        stage.show();
+    public void start(Stage primaryStage) throws Exception {
+        // Load the FXML file
+        Parent root = FXMLLoader.load(getClass().getResource("/com/example/hospitalmanagmentsystem/patient.fxml"));
+
+        // Set the scene
+        Scene scene = new Scene(root, 800, 600);
+
+        // Add the CSS stylesheet
+        scene.getStylesheets().add(getClass().getResource("/com/example/hospitalmanagmentsystem/application.css").toExternalForm());
+
+        // Configure the stage
+        primaryStage.setTitle("Hospital Information System");
+        primaryStage.setScene(scene);
+        primaryStage.setResizable(true);
+        primaryStage.show();
     }
 
+    /**
+     * Main method
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.hospitalmanagmentsystem;
+package com.example.hospitalmanagmentsystem.consoleDemo;
 import com.example.hospitalmanagmentsystem.util.DatabaseConnection;
 import com.example.hospitalmanagmentsystem.model.Patient;
 import com.example.hospitalmanagmentsystem.dao.PatientDAO;
