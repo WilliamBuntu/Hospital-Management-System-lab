@@ -23,7 +23,7 @@ public class HospitalApplication extends Application {
         scene.getStylesheets().add(getClass().getResource("/com/example/hospitalmanagmentsystem/application.css").toExternalForm());
 
         // Configure the stage
-        primaryStage.setTitle("Hospital Information System");
+        primaryStage.setTitle("Hospital Management System");
         primaryStage.setScene(scene);
         primaryStage.setResizable(true);
         primaryStage.show();
