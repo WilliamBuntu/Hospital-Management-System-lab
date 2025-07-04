@@ -22,7 +22,7 @@ The database schema is designed based on the provided Entity-Relationship Diagra
 5. `wards`: Stores information about hospital wards
 6. `patients`: Stores information about hospital patients
 7. `hospitalizations`: Stores information about patient admissions
-8. `transfers`: Stores information about patient transfers between wards -
+8. `transfers`: Stores information about patient transfers between wards
 
 ## Getting Started
 
