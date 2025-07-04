@@ -30,7 +30,7 @@ The database schema is designed based on the provided Entity-Relationship Diagra
 
 - Java JDK 8 or higher
 - MySQL or Postgres database server
-- JDBC driver for your database
+- JDBC driver for your databases
 
 ### Setup Instructions
 
